@@ -9,8 +9,8 @@
 	</select>
 
 	<insert id="save">
-		insert into user(username, password, email, createDate) 
-		values(#{username}, #{password}, #{email}, now())
+		insert into user(username, password, email, role, createDate) 
+		values(#{username}, #{password}, #{email}, 'USER', now())
 	</insert>
 	
 	<select id="findById" resultType="com.cos.blog.model.user.User">
@@ -28,6 +28,11 @@
 	<update id="update">
 		update user set password = #{password}, profile = #{profile} where id = #{id}
 	</update>
+	
+	
+	<select id="authentication" resultType="com.cos.blog.model.user.User">
+		select id, username, email, profile, createDate from user where username = #{username}
+	</select>
 
 </mapper>
 

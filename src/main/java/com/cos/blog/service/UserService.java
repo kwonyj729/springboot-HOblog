@@ -3,6 +3,7 @@ package com.cos.blog.service;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,9 @@ public class UserService {
 	@Autowired
 	private HttpSession session;
 	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
 	// result = 0 비정상, 1 정상, -1 DB 오류, -2 아이디 중복
 	@Transactional
 	public int 회원가입(ReqJoinDto dto) {
@@ -30,10 +34,17 @@ public class UserService {
 			if(result == 1) {
 				return ReturnCode.아이디중복;
 			}else {
+				// 패스워드 암호화 하기.!!
+				// 이제 여기서 받아서 쓰면된다. BCrypt를.
+				String encodePassword = passwordEncoder.encode(dto.getPassword());
+				dto.setPassword(encodePassword);    
+				//이제 토근이 알아서 비밀번호를 암호화 해줄거다.. 테스트해보기.
+				
 				return userRepository.save(dto);
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new RuntimeException();
 		}
 	}
